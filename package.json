@@ -1,0 +1,28 @@
+{
+  "name": "blue-chat",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --parallel --filter \"./apps/*\" dev",
+    "dev:web": "pnpm --filter @blue-chat/web dev",
+    "dev:api": "pnpm --filter @blue-chat/api dev",
+    "build": "pnpm --filter \"./apps/*\" build",
+    "build:web": "pnpm --filter @blue-chat/web build",
+    "build:api": "pnpm --filter @blue-chat/api build",
+    "lint": "pnpm --filter \"./apps/*\" lint",
+    "commit": "cz",
+    "prepare": "husky"
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
+  },
+  "packageManager": "pnpm@10.29.3",
+  "devDependencies": {
+    "@commitlint/cli": "^21.0.2",
+    "@commitlint/config-conventional": "^21.0.2",
+    "commitizen": "^4.3.2",
+    "cz-conventional-changelog": "^3.3.0",
+    "husky": "^9.1.7"
+  }
+}
