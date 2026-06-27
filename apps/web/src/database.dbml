@@ -1,0 +1,66 @@
+Table auth {
+  id int [primary key]
+
+  name varchar [note: 'auth 이름']
+  email varchar [unique, note: '이메일']
+  password varchar [note: '비밀번호']
+  
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table users {
+  id int [primary key]
+  auth_id int [ref: > auth.id]
+
+  name varchar [note: '유저 이름']
+  avatar varchar [note: '유저 아바타 이미지']
+  online boolean [note: '유저 온라인 상태']
+  status varchar [note: '유저 상태 메시지']
+  
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table favorites {
+  id int [primary key]
+  user_id int [ref: > users.id, note: '즐겨찾기 한 사람']
+  favorite_user_id int [ref: > users.id, note: '즐겨찾기 당한 사람']
+
+  created_at timestamp
+  updated_at timestamp
+}
+
+
+Table rooms {
+  id int [primary key]
+
+  type varchar [note: 'dm 또는 group']
+  name varchar [note: 'group일 때만 사용, dm이면 null']
+  
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table participants {
+  id int [primary key]
+  user_id int [ref: > users.id]
+  room_id int [ref: > rooms.id]
+
+  last_read_message_id int [ref: > messages.id, note: '유저가 이 방에서 마지막으로 읽은 메시지가 어디까지인지 안읽음 개수 계산할 때 씀 (예: 이 id 이후로 온 메시지 개수 = 안읽은 메시지 수).']
+  joined_at timestamp [note: '유저가 이 방에 들어온 시점. 방 재입장 같은 기능 생기면 이 값만 갱신']
+
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table messages {
+  id int [primary key]
+  room_id int [ref: > rooms.id]
+  user_id int [ref: > users.id]
+
+  content varchar [note: '메시지 내용']
+
+  created_at timestamp
+  updated_at timestamp
+}
