@@ -1,6 +1,6 @@
 type AvatarProps = {
-  avatar: string;
-  online: boolean;
+  avatar?: string;
+  online?: boolean;
 };
 
 export function Avatar({ avatar, online }: AvatarProps) {

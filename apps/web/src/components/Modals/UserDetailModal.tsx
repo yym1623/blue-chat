@@ -4,14 +4,15 @@ import { Link } from "react-router-dom";
 import { useModalTransition } from "@/hooks/useModalTransition";
 // data
 import { users } from "@/data/users";
+import { me } from "@/data/my/me";
 
-type UserProfileModalProps = {
+type UserDetailModalProps = {
   open: boolean;
   userId: number | null;
   onClose: () => void;
 };
 
-export function UserProfileModal({ open, userId, onClose }: UserProfileModalProps) {
+export function UserDetailModal({ open, userId, onClose }: UserDetailModalProps) {
   const { close, backdrop, sheet } = useModalTransition(open, onClose);
 
   if (!open || !userId) return null;
@@ -37,13 +38,30 @@ export function UserProfileModal({ open, userId, onClose }: UserProfileModalProp
         className={`relative flex h-full w-full max-w-[500px] flex-col justify-between bg-surface px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-3 shadow-xl transition-transform duration-300 ease-out ${sheet}`}
       >
         <div className="flex items-center justify-between">
-          <button type="button" className="flex cursor-pointer items-center gap-2.5" onClick={close}>
-            <span className="material-symbols-outlined text-[20px]">close</span>
+          <button
+            type="button"
+            className="flex size-8 cursor-pointer items-center justify-center rounded-full border border-text/10 text-sm text-text-h"
+            onClick={close}
+          >
+            <span className="material-symbols-outlined text-[18px]">close</span>
           </button>
 
-          <button type="button" className="flex items-center text-xs border rounded-md py-1 px-2 cursor-pointer">
-            <span>프로필 편집</span>
-          </button>
+          <div className="flex items-center gap-2">
+            {me?.id === userId && (
+              <button
+                type="button"
+                className="flex h-8 cursor-pointer items-center rounded-full border border-text/10 px-3 text-sm text-text-h"
+              >
+                프로필 편집
+              </button>
+            )}
+            <button
+              type="button"
+              className="flex size-8 cursor-pointer items-center justify-center rounded-full border border-text/10 text-sm text-text-h"
+            >
+              <span className="material-symbols-outlined text-[18px]">more_horiz</span>
+            </button>
+          </div>
         </div>
 
         <div className="flex flex-col items-center text-center">
@@ -81,7 +99,6 @@ export function UserProfileModal({ open, userId, onClose }: UserProfileModalProp
         </div>
 
         <div></div>
-
       </div>
     </div>
   );

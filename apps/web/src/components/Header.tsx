@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useLocation, useMatches } from "react-router-dom";
 
 // components
-import { UserProfileModal } from "@/components/Modals/UserProfileModal";
+import { UserDetailModal } from "@/components/Modals/UserDetailModal";
 import { Avatar } from "@/components/Avatar";
 
 // data
@@ -16,16 +16,16 @@ export function Header() {
 
 
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
-  const [openUserProfileModal, setOpenUserProfileModal] = useState(false);
+  const [openUserDetailModal, setOpenUserDetailModal] = useState(false);
   
   function handleUserEvent(id: number) {
     setSelectedUserId(id)
-    setOpenUserProfileModal(true)
+    setOpenUserDetailModal(true)
   }
 
   return (
-    <header className="border-text/10 bg-bg px-4 py-3">
-      <div className="flex items-center justify-between h-12">
+    <header className="border-text/10 bg-bg px-4 pt-3 pb-2">
+      <div className="flex items-center justify-between h-10">
         {location.pathname === '/' ? (
           <button type="button" className="flex items-center gap-2.5 cursor-pointer" onClick={() => handleUserEvent(me?.id)}>
             <Avatar avatar={me?.avatar} online={me?.online} />
@@ -53,10 +53,10 @@ export function Header() {
         </div>
       </div>
 
-      <UserProfileModal
-        open={openUserProfileModal}
+      <UserDetailModal
+        open={openUserDetailModal}
         userId={selectedUserId}
-        onClose={() => setOpenUserProfileModal(false)}
+        onClose={() => setOpenUserDetailModal(false)}
       />
     </header>
   );

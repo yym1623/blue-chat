@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 // COMPONENTS
-import { UserProfileModal } from "@/components/Modals/UserProfileModal";
+import { UserDetailModal } from "@/components/Modals/UserDetailModal";
 import { Avatar } from "@/components/Avatar";
 
 // data
@@ -11,11 +11,11 @@ import { favorite } from "@/data/my/favorite";
 
 export function Home() {
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
-  const [openUserProfileModal, setOpenUserProfileModal] = useState(false);
+  const [openUserDetailModal, setOpenUserDetailModal] = useState(false);
   
   function handleUserEvent(id: number) {
     setSelectedUserId(id)
-    setOpenUserProfileModal(true)
+    setOpenUserDetailModal(true)
   }
 
   return (
@@ -67,10 +67,10 @@ export function Home() {
         </ul>
       </section>
 
-      <UserProfileModal
-        open={openUserProfileModal}
+      <UserDetailModal
+        open={openUserDetailModal}
         userId={selectedUserId}
-        onClose={() => setOpenUserProfileModal(false)}
+        onClose={() => setOpenUserDetailModal(false)}
       />
     </div>
   );

@@ -1,4 +1,7 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+
+// components
+import { ChatDetailModal } from "@/components/Modals/ChatDetailModal";
 
 const chats = [
   {
@@ -49,14 +52,24 @@ const chats = [
 ] as const;
 
 export function Chat() {
+
+  const [selectedChatId, setSelectedChatId] = useState<number | null>(null);
+  const [openChatDetailModal, setOpenChatDetailModal] = useState(false);
+  
+  function handleChatEvent(id: number) {
+    setSelectedChatId(id)
+    setOpenChatDetailModal(true)
+  }
+
   return (
     <div className="flex-1 overflow-y-auto">
       <ul>
         {chats.map((chat) => (
           <li key={chat.id}>
-            <Link
-              to={`/chat/${chat.id}`}
-              className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-surface active:bg-surface"
+            <button
+              type="button"
+              onClick={() => handleChatEvent(chat.id)}
+              className="flex w-full items-center gap-3 px-4 py-3 text-start transition-colors hover:bg-surface active:bg-surface cursor-pointer"
             >
               <div
                 className={`flex size-12 shrink-0 items-center justify-center rounded-2xl text-sm font-semibold text-white ${chat.color}`}
@@ -80,10 +93,16 @@ export function Chat() {
                   )}
                 </div>
               </div>
-            </Link>
+            </button>
           </li>
         ))}
       </ul>
+
+      <ChatDetailModal
+        open={openChatDetailModal}
+        chatId={selectedChatId}
+        onClose={() => setOpenChatDetailModal(false)}
+      />
     </div>
   );
 }

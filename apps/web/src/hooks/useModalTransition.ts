@@ -5,15 +5,20 @@ export function useModalTransition(open: boolean, onClose: () => void, duration 
 
   useEffect(() => {
     if (!open) {
-      setShow(false);
-      return;
+      const frame = requestAnimationFrame(() => setShow(false));
+      return () => cancelAnimationFrame(frame);
     }
 
-    setShow(false);
+    let innerFrame = 0;
     const frame = requestAnimationFrame(() => {
-      requestAnimationFrame(() => setShow(true));
+      setShow(false);
+      innerFrame = requestAnimationFrame(() => setShow(true));
     });
-    return () => cancelAnimationFrame(frame);
+
+    return () => {
+      cancelAnimationFrame(frame);
+      cancelAnimationFrame(innerFrame);
+    };
   }, [open]);
 
   function close() {
