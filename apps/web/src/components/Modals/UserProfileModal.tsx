@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom";
 
+// hooks
+import { useModalTransition } from "@/hooks/useModalTransition";
 // data
-import { userProfiles } from "@/data/userProfile";
+import { users } from "@/data/users";
 
 type UserProfileModalProps = {
   open: boolean;
@@ -10,9 +12,12 @@ type UserProfileModalProps = {
 };
 
 export function UserProfileModal({ open, userId, onClose }: UserProfileModalProps) {
+  const { close, backdrop, sheet } = useModalTransition(open, onClose);
+
   if (!open || !userId) return null;
 
-  const user = userProfiles.find((user) => user.id === userId);
+  const user = users.find((user) => user.id === userId);
+  if (!user) return null;
 
   return (
     <div
@@ -24,19 +29,31 @@ export function UserProfileModal({ open, userId, onClose }: UserProfileModalProp
       <button
         type="button"
         aria-label="모달 닫기"
-        className="absolute inset-0 bg-black/40"
-        onClick={onClose}
+        className={`absolute inset-0 bg-black/40 transition-opacity duration-300 ${backdrop}`}
+        onClick={close}
       />
 
-      <div className="relative w-full max-w-[500px] rounded-t-3xl bg-surface px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-3 shadow-xl">
-        <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-text/20" />
+      <div
+        className={`relative flex h-full w-full max-w-[500px] flex-col justify-between bg-surface px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-3 shadow-xl transition-transform duration-300 ease-out ${sheet}`}
+      >
+        <div className="flex items-center justify-between">
+          <button type="button" className="flex cursor-pointer items-center gap-2.5" onClick={close}>
+            <span className="material-symbols-outlined text-[20px]">close</span>
+          </button>
+
+          <button type="button" className="flex items-center text-xs border rounded-md py-1 px-2 cursor-pointer">
+            <span>프로필 편집</span>
+          </button>
+        </div>
 
         <div className="flex flex-col items-center text-center">
           <div className="relative">
-            <div
-              className={`flex size-20 items-center justify-center rounded-3xl text-2xl font-semibold text-white ${user.color}`}
-            >
-              {user.avatar}
+            <div className="flex size-20 items-center justify-center rounded-3xl bg-primary font-semibold">
+              {user.avatar ? (
+                user.avatar
+              ) : (
+                <span className="material-symbols-outlined text-4xl!">person</span>
+              )}
             </div>
             {user.online && (
               <span className="absolute bottom-1 right-1 size-4 rounded-full border-2 border-surface bg-emerald-400" />
@@ -46,24 +63,25 @@ export function UserProfileModal({ open, userId, onClose }: UserProfileModalProp
           <h2 id="user-profile-title" className="mt-4 text-lg font-semibold text-text-h">
             {user.name}
           </h2>
+
+          <div className="mt-6 grid grid-cols-2 gap-2 w-full">
+            <Link
+              to={`/chat/${user.id}`}
+              onClick={close}
+              className="flex items-center justify-center gap-1.5 rounded-xl bg-bg py-3 text-sm font-medium text-text-h transition-colors hover:text-text"
+            >
+              <span className="material-symbols-outlined text-[20px]">chat</span>
+              <span>채팅하기</span>
+            </Link>
+            <div className="flex items-center justify-center gap-1.5 rounded-xl bg-bg py-3 text-sm font-medium text-text-h transition-colors hover:text-text">
+              <span className="material-symbols-outlined text-[20px]">person</span>
+              <span>프로필</span>
+            </div>
+          </div>
         </div>
 
-        <div className="mt-6 grid grid-cols-2 gap-2">
-          <Link
-            to={`/chat/${user.id}`}
-            className="flex items-center justify-center gap-1.5 rounded-xl bg-bg py-3 text-sm font-medium text-text-h transition-colors hover:text-text"
-          >
-            <span className="material-symbols-outlined text-[20px]">chat</span>
-            <span>채팅하기</span>
-          </Link>
-          <Link
-            to={`/user/${user.id}`}
-            className="flex items-center justify-center gap-1.5 rounded-xl bg-bg py-3 text-sm font-medium text-text-h transition-colors hover:text-text"
-          >
-            <span className="material-symbols-outlined text-[20px]">person</span>
-            <span>프로필</span>
-          </Link>
-        </div>
+        <div></div>
+
       </div>
     </div>
   );

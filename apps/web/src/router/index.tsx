@@ -18,18 +18,22 @@ export const router = createBrowserRouter([
       {
         index: true,
         element: <Home />,
+        handle: { title: "홈" },
       },
       {
         path: "/chat",
         element: <Chat />,
+        handle: { title: "채팅" },
       },
       {
         path: "/chat/:id",
         element: <ChatDetail />,
+        handle: { title: "채팅 상세" },
       },
       {
         path: "/user",
         element: <User />,
+        handle: { title: "프로필" },
       },
     ],
   },

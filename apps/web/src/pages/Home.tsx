@@ -5,7 +5,9 @@ import { UserProfileModal } from "@/components/Modals/UserProfileModal";
 import { Avatar } from "@/components/Avatar";
 
 // data
-import { userFavorites, userProfiles } from "@/data/userProfile";
+import { me } from "@/data/my/me";
+import { users } from "@/data/users";
+import { favorite } from "@/data/my/favorite";
 
 export function Home() {
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
@@ -21,21 +23,20 @@ export function Home() {
       <section className="border-b border-text/10 px-4 py-4">
         <div className="mb-3 flex items-center justify-between">
           <h2 className="text-sm font-semibold text-text-h">즐겨찾기</h2>
-          <span className="text-xs text-text">{userFavorites.length}명</span>
+          <span className="text-xs text-text">{favorite.length}명</span>
         </div>
         <ul className="flex gap-4 overflow-x-auto pb-1">
-          {userFavorites.map((user) => (
+          {favorite.map((user) => (
             <li key={user.id} className="flex w-16 shrink-0 flex-col items-center gap-1.5">
-              <button onClick={() => handleUserEvent(user.id)}>
+              <button type="button" onClick={() => handleUserEvent(user.id)} className="cursor-pointer">
                 <Avatar
                   avatar={user.avatar}
-                  color={user.color}
                   online={user.online}
                 />
+                <span className="w-full truncate text-center text-xs text-text-h">
+                  {user.name}
+                </span>
               </button>
-              <span className="w-full truncate text-center text-xs text-text-h">
-                {user.name}
-              </span>
             </li>
           ))}
         </ul>
@@ -44,15 +45,14 @@ export function Home() {
       <section>
         <div className="flex items-center justify-between px-4 py-3">
           <h2 className="text-sm font-semibold text-text-h">친구</h2>
-          <span className="text-xs text-text">{userProfiles.length}명</span>
+          <span className="text-xs text-text">{users.length}명</span>
         </div>
         <ul>
-          {userProfiles.map((user) => (
+          {users.filter((user => user.id !== me.id)).map((user) => (
             <li key={user.id}>
-              <button onClick={() => handleUserEvent(user.id)} className="flex w-full items-center gap-3 px-4 py-3 text-start transition-colors hover:bg-surface active:bg-surface">
+              <button type="button" onClick={() => handleUserEvent(user.id)} className="flex w-full items-center gap-3 px-4 py-3 text-start transition-colors hover:bg-surface active:bg-surface cursor-pointer">
                 <Avatar
                   avatar={user.avatar}
-                  color={user.color}
                   online={user.online}
                 />
                 <div className="min-w-0 flex-1">
@@ -66,7 +66,6 @@ export function Home() {
           ))}
         </ul>
       </section>
-
 
       <UserProfileModal
         open={openUserProfileModal}

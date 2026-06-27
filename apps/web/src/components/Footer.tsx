@@ -11,7 +11,7 @@ const tabs = [
 
 export function Footer() {
   return (
-    <footer className="border-t border-text/10 bg-surface">
+    <footer className="border-t border-text/10 bg-bg">
       <nav className="flex items-stretch">
         {tabs.map(({ to,  icon }) => (
           <NavLink
