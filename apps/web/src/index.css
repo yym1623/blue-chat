@@ -4,13 +4,20 @@
 @theme {
   --color-bg: light-dark(#ffffff, #0f1117);
   --color-surface: light-dark(#f1f4f6, #1a1d27);
+  --color-page: light-dark(#e8f0fe, #080a10);
   --color-text: light-dark(#6b6375, #9ca3af);
   --color-text-h: light-dark(#08060d, #f3f4f6);
+  --color-primary: #abc1d1;
+  --color-default: light-dark(#000000, #ffffff);
 }
 
 html,
 body {
   min-height: 100vh;
-  background-color: var(--color-bg);
+  background-color: var(--color-page);
   color: var(--color-text);
+}
+
+::-webkit-scrollbar {
+  display: none;
 }
