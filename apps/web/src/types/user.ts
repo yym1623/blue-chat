@@ -1,4 +1,4 @@
-export type Users = {
+export type User = {
   id: number;
   auth_id?: number;
   name: string;

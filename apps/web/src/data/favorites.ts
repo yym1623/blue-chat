@@ -1,6 +1,6 @@
-import type { Favorites } from "@/types/favorites";
+import type { Favorite } from "@/types/favorite";
 
-export const favorites: Favorites[] = [
+export const favorites: Favorite[] = [
   {
     id: 1,
     user_id: 1,

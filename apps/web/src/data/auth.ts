@@ -1,4 +1,6 @@
-export const auth = [
+import type { Auth } from "@/types/auth";
+
+export const auth: Auth[] = [
   {
     id: 1,
     name: "윤영민",
