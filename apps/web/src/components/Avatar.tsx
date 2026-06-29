@@ -7,7 +7,7 @@ export function Avatar({ avatar, online }: AvatarProps) {
   return (
     <div className="relative shrink-0">
       <div
-        className="flex size-12 items-center justify-center rounded-2xl font-semibold bg-primary"
+        className="flex size-10 items-center justify-center rounded-2xl font-semibold bg-primary"
       >
         {avatar ? avatar : (<span className="material-symbols-outlined">person</span>)}
       </div>

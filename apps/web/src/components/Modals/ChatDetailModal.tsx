@@ -3,55 +3,27 @@ import { useModalTransition } from "@/hooks/useModalTransition";
 // components
 import { Avatar } from "@/components/Avatar";
 
-const messages = [
-  {
-    id: 1,
-    type: "other" as const,
-    text: "안녕! blue-chat 테스트 중이야?",
-    time: "오후 2:10",
-  },
-  {
-    id: 2,
-    type: "me" as const,
-    text: "응 지금 홈이랑 채팅 화면 만들고 있어 ㅎㅎ",
-    time: "오후 2:11",
-  },
-  {
-    id: 3,
-    type: "other" as const,
-    text: "오 카카오톡 느낌 나게 해줘",
-    time: "오후 2:12",
-  },
-  {
-    id: 4,
-    type: "me" as const,
-    text: "알겠어! 일단 가볍게 입혀봤어",
-    time: "오후 2:13",
-  },
-  {
-    id: 5,
-    type: "other" as const,
-    text: "괜찮은데? 말풍선 색도 비슷하게 가면 좋겠다",
-    time: "오후 2:14",
-  },
-  {
-    id: 6,
-    type: "me" as const,
-    text: "노란색 말풍선은 카톡 시그니처지 ㅋㅋ",
-    time: "오후 2:15",
-  },
-] as const;
+import { getRoomWithParticipants, getRoomMessages } from "@/data/my/room";
 
 type ChatDetailModalProps = {
-  open: boolean;
-  chatId: number | null;
+  isOpen: boolean;
+  roomId: number | null;
   onClose: () => void;
 };
 
-export function ChatDetailModal({ open, chatId, onClose }: ChatDetailModalProps) {
-  const { close, backdrop, sheet } = useModalTransition(open, onClose);
+export function ChatDetailModal({ isOpen, roomId, onClose }: ChatDetailModalProps) {
+  const { close, backdrop, sheet } = useModalTransition(isOpen, onClose);
+  
+  
 
-  if (!open || !chatId) return null;
+  if (!isOpen || !roomId) return null;
+
+  
+  const room = getRoomWithParticipants(roomId); // 헤더용
+  const roomMessages = getRoomMessages(roomId);  // 바디용
+
+  console.log("room", room)
+  console.log("roomMessages", roomMessages)
 
   return (
     <div
@@ -109,25 +81,25 @@ export function ChatDetailModal({ open, chatId, onClose }: ChatDetailModalProps)
           <div className="flex-1 space-y-3 overflow-y-auto px-4 py-3">
             <p className="text-center text-xs text-text">2026년 6월 23일 월요일</p>
 
-            {messages.map((message) => (
+            {roomMessages.map((message) => (
               <div
                 key={message.id}
-                className={`flex ${message.type === "me" ? "justify-end" : "justify-start"}`}
+                className={`flex ${message?.type === "me" ? "justify-end" : "justify-start"}`}
               >
                 <div
                   className={`max-w-[75%] rounded-2xl px-3 py-2 text-sm leading-relaxed shadow-sm ${
-                    message.type === "me"
+                    message?.type === "me"
                       ? "rounded-tr-sm bg-[#fee500] text-[#191919]"
                       : "rounded-tl-sm bg-surface text-text-h"
                   }`}
                 >
-                  <p>{message.text}</p>
+                  <p>{message?.content}</p>
                   <p
                     className={`mt-1 text-[10px] ${
-                      message.type === "me" ? "text-[#191919]/60" : "text-text"
+                      message?.isMe ? "text-[#191919]/60" : "text-text"
                     }`}
                   >
-                    {message.time}
+                    {message?.created_at}
                   </p>
                 </div>
               </div>

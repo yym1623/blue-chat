@@ -7,7 +7,7 @@ import { Avatar } from "@/components/Avatar";
 // data
 import { me } from "@/data/my/me";
 import { users } from "@/data/users";
-import { favorite } from "@/data/my/favorite";
+import { favorite } from "@/data/my/favorites";
 
 export function Home() {
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
@@ -25,15 +25,15 @@ export function Home() {
           <h2 className="text-sm font-semibold text-text-h">즐겨찾기</h2>
           <span className="text-xs text-text">{favorite.length}명</span>
         </div>
-        <ul className="flex gap-4 overflow-x-auto pb-1">
+        <ul className="flex gap-4 overflow-x-auto">
           {favorite.map((user) => (
-            <li key={user.id} className="flex w-16 shrink-0 flex-col items-center gap-1.5">
+            <li key={user.id} className="flex shrink-0 flex-col items-center gap-1.5">
               <button type="button" onClick={() => handleUserEvent(user.id)} className="cursor-pointer">
                 <Avatar
                   avatar={user.avatar}
                   online={user.online}
                 />
-                <span className="w-full truncate text-center text-xs text-text-h">
+                <span className="w-full truncate font-bold text-center text-xs text-text-h">
                   {user.name}
                 </span>
               </button>
