@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-// COMPONENTS
+// components
 import { UserDetailModal } from "@/components/Modals/UserDetailModal";
 import { Avatar } from "@/components/Avatar";
 

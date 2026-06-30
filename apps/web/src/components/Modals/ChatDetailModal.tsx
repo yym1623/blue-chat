@@ -1,9 +1,17 @@
-import { useModalTransition } from "@/hooks/useModalTransition";
+import { useState, useEffect, useRef } from "react";
+import dayjs from "dayjs";
 
 // components
 import { Avatar } from "@/components/Avatar";
 
-import { getRoomWithParticipants, getRoomMessages } from "@/data/my/room";
+//hooks
+import { useModalTransition } from "@/hooks/useModalTransition";
+
+// data
+// import { getRoomWithParticipants } from "@/data/my/message";
+import { getMessages } from "@/data/my/message";
+import { me } from "@/data/my/me";
+
 
 type ChatDetailModalProps = {
   isOpen: boolean;
@@ -11,19 +19,70 @@ type ChatDetailModalProps = {
   onClose: () => void;
 };
 
+
 export function ChatDetailModal({ isOpen, roomId, onClose }: ChatDetailModalProps) {
   const { close, backdrop, sheet } = useModalTransition(isOpen, onClose);
-  
-  
 
+  const [text, setText] = useState('');
+  const [roomMessages, setRoomMessages] = useState(() =>
+    roomId ? getMessages(roomId) : []
+  );
+
+  const isInitialMount = useRef(true);
+
+  const bottomRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!isOpen) return;
+  
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return; // 진입 시 smooth 스킵 (위 effect가 auto로 처리)
+    }
+  
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [roomMessages]);
+  
+  useEffect(() => {
+    if (!isOpen) {
+      isInitialMount.current = true; // 닫을 때 리셋
+      return;
+    }
+  
+    requestAnimationFrame(() => {
+      bottomRef.current?.scrollIntoView({ behavior: 'auto' });
+    });
+  }, [isOpen, roomId]);
+  
   if (!isOpen || !roomId) return null;
 
-  
-  const room = getRoomWithParticipants(roomId); // 헤더용
-  const roomMessages = getRoomMessages(roomId);  // 바디용
 
-  console.log("room", room)
-  console.log("roomMessages", roomMessages)
+  function handleAdd(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+
+      if (e.nativeEvent.isComposing) return;
+
+      const content = text.trim();
+      if(!content) return
+
+      setRoomMessages((prev) => [
+        ...prev,
+        {
+          id: Date.now(),
+          content,
+          name: me?.name,
+          avatar: me?.avatar,
+          online: me?.online,
+          isMe: true,
+          created_at: new Date().toISOString(),
+        },
+      ])
+
+      // 입력 초기화
+      setText('');
+    }
+  }
 
   return (
     <div
@@ -84,26 +143,39 @@ export function ChatDetailModal({ isOpen, roomId, onClose }: ChatDetailModalProp
             {roomMessages.map((message) => (
               <div
                 key={message.id}
-                className={`flex ${message?.type === "me" ? "justify-end" : "justify-start"}`}
+                className={`flex ${message.isMe ? "justify-end" : "justify-start"}`}
               >
-                <div
-                  className={`max-w-[75%] rounded-2xl px-3 py-2 text-sm leading-relaxed shadow-sm ${
-                    message?.type === "me"
-                      ? "rounded-tr-sm bg-[#fee500] text-[#191919]"
-                      : "rounded-tl-sm bg-surface text-text-h"
-                  }`}
-                >
-                  <p>{message?.content}</p>
-                  <p
-                    className={`mt-1 text-[10px] ${
-                      message?.isMe ? "text-[#191919]/60" : "text-text"
-                    }`}
-                  >
-                    {message?.created_at}
-                  </p>
-                </div>
+                {message.isMe ? (
+                  <div className="flex max-w-[75%] items-end gap-1">
+                    <span className="text-[10px] text-text">
+                      {dayjs(message.created_at).format("M월 D일")}
+                    </span>
+                    <div className="rounded-xl rounded-tr-sm bg-[#fee500] px-3 py-2 text-sm leading-relaxed text-[#191919] shadow-sm">
+                      <p>{message.content}</p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex max-w-[75%] items-start gap-2">
+                    <Avatar avatar={message.avatar} online={message.online} />
+
+                    <div className="flex min-w-0 flex-col gap-1">
+                      <span className="text-xs font-medium text-text-h">{message.name}</span>
+                      <div className="flex items-end gap-1">
+                        <div className="rounded-xl rounded-tl-sm bg-surface px-3 py-2 text-sm leading-relaxed text-text-h shadow-sm">
+                          <p>{message.content}</p>
+                        </div>
+                        <span className="text-[10px] text-text">
+                          {dayjs(message.created_at).format("M월 D일")}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             ))}
+
+            {/* 채팅 동적 아래 고정 */}
+            <div ref={bottomRef} />
           </div>
 
           {/* message input */}
@@ -119,6 +191,9 @@ export function ChatDetailModal({ isOpen, roomId, onClose }: ChatDetailModalProp
               <div className="flex min-h-9 flex-1 items-center rounded-2xl bg-bg px-3 py-2">
                 <input
                   type="text"
+                  value={text}
+                  onChange={(e) => setText(e.target.value)}
+                  onKeyDown={(e) => {handleAdd(e)}}
                   placeholder="메시지를 입력하세요"
                   className="w-full bg-transparent text-sm text-text-h outline-none placeholder:text-text"
                 />
